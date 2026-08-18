@@ -134,6 +134,27 @@ schedule:
   frequency: daily         # informativo: cada cuánto se espera correr run.py
 ```
 
+## Ver los resultados en Power BI
+
+Cada vez que corres `run.py`, además de imprimir por consola y (opcionalmente)
+guardar el gráfico, deja un `data/results.csv` con la tabla completa: fecha,
+valor, valor esperado, y si ese día se marcó como anomalía.
+
+Para pintarlo en Power BI:
+
+1. Descarga `data/results.csv` (o cópialo desde donde lo hayas ejecutado,
+   p.ej. Google Colab).
+2. En Power BI Desktop: **Obtener datos → Texto/CSV** → selecciona el archivo.
+3. Ya tienes la tabla para montar el gráfico que quieras (línea de `value`
+   en el tiempo, resaltando las filas donde `is_anomaly` es `True`).
+
+Este CSV se regenera en cada ejecución y no se sube al repositorio (está en
+`.gitignore`) — es un resultado, no código.
+
+Más adelante, cuando conectes datos reales vía BigQuery, Power BI también
+tiene conector nativo a BigQuery, así que se podría prescindir del CSV
+intermedio y leer la misma tabla directamente.
+
 ## Próximos pasos (fuera de esta fase)
 
 - Sustituir `load_data()` en `src/run.py` por una query real (p.ej.

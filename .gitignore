@@ -6,3 +6,6 @@ venv/
 
 # Gráficos generados por generate_synthetic.py --plot y run.py --plot
 data/*.png
+
+# Resultados de cada ejecución de run.py (se regenera cada vez)
+data/results.csv

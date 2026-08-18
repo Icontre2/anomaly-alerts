@@ -5,6 +5,10 @@ Uso:
     python src/run.py --generate       # regenera los datos sintéticos antes de detectar
     python src/run.py --plot           # guarda además un PNG con las anomalías marcadas
     python src/run.py --no-notify      # detecta pero no envía alertas (solo consola)
+
+Cada ejecución guarda además data/results.csv con el resultado completo
+(fecha, valor, valor esperado, si se marcó como anomalía...), pensado para
+enchufarlo directamente a Power BI u otra herramienta de visualización.
 """
 from __future__ import annotations
 
@@ -35,6 +39,14 @@ def load_data(config: dict, regenerate: bool) -> pd.DataFrame:
         df = generate_series()
         save_synthetic(df, data_path)
     return pd.read_csv(data_path, parse_dates=["date"])
+
+
+def save_results(df: pd.DataFrame, output: Path) -> None:
+    """Guarda el resultado completo en CSV, listo para Power BI u otra
+    herramienta de visualización (Obtener datos -> CSV -> este archivo)."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output, index=False)
+    print(f"Resultados guardados en {output}")
 
 
 def plot_results(df: pd.DataFrame, output: Path) -> None:
@@ -88,6 +100,8 @@ def main() -> None:
     else:
         cols = ["date", "value", "expected_value"] + (["z_score"] if "z_score" in anomalies.columns else [])
         print(anomalies[cols].to_string(index=False))
+
+    save_results(result, ROOT / "data" / "results.csv")
 
     if args.plot:
         plot_results(result, ROOT / "data" / "detected_anomalies.png")
