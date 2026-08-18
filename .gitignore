@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Gráficos generados por generate_synthetic.py --plot y run.py --plot
+data/*.png

@@ -1,0 +1,36 @@
+# anomaly-alerts — configuración de Fase 1
+#
+# Todo corre sobre datos sintéticos (data/synthetic_metric.csv). La
+# conexión a datos reales (p.ej. BigQuery) se hace en una fase posterior,
+# sustituyendo `load_data()` en src/run.py.
+
+data:
+  path: data/synthetic_metric.csv
+  metric_name: "instalaciones"
+
+detection:
+  method: zscore          # zscore | iqr
+  window_days: 7           # ventana de comparación (media móvil)
+  # Desviaciones estándar para marcar anomalía (método zscore). Con un
+  # umbral de 2.0 (el ejemplo típico) ~1 de cada 20 días normales supera el
+  # umbral solo por azar estadístico (regla del 2-sigma), y en la serie
+  # sintética de prueba eso basta para disparar falsos positivos. 3.0 separa
+  # limpio las 4 anomalías forzadas (|z| >= 6.7) del ruido normal (|z| < 2.8).
+  threshold_std: 3.0
+  iqr_multiplier: 1.5      # multiplicador del rango intercuartílico (método iqr)
+
+notification:
+  channel: none              # telegram | email | none
+  telegram:
+    bot_token: ""             # token que da BotFather al crear el bot
+    chat_id: ""                # chat_id del usuario o canal que recibe la alerta
+  email:
+    smtp_host: ""
+    smtp_port: 587
+    username: ""
+    password: ""
+    from_addr: ""
+    to_addr: ""
+
+schedule:
+  frequency: daily          # informativo: cada cuánto se espera correr run.py (cron externo)
